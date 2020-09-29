@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Promise</title>
+  <style>
+    div {
+      display: inline-block;
+      margin: 10px;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background-color: grey;
+    }
+
+    .green.light {
+      background-color: green;
+    }
+
+    .yellow.light {
+      background-color: yellow;
+    }
+
+    .red.light {
+      background-color: red;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="green light"></div>
+  <div class="yellow"></div>
+  <div class="red"></div>
+  <button>next</button>
+  <script>
+    function sleep(delay) {
+      return new Promise((resolve) => {
+        setTimeout(resolve, delay)
+      })
+    }
+
+    function green() {
+      var lights = document.getElementsByTagName('div')
+      for (var i = 0; i < lights.length; i++) {
+        lights[i].classList.remove('light');
+      }
+      document.getElementsByClassName('green')[0].classList.add('light');
+    }
+    function yellow() {
+      var lights = document.getElementsByTagName('div')
+      for (var i = 0; i < lights.length; i++) {
+        lights[i].classList.remove('light');
+      }
+      document.getElementsByClassName('yellow')[0].classList.add('light');
+    }
+    function red() {
+      var lights = document.getElementsByTagName('div')
+      for (var i = 0; i < lights.length; i++) {
+        lights[i].classList.remove('light');
+      }
+      document.getElementsByClassName('red')[0].classList.add('light');
+    }
+
+    function go() {
+      green();
+      sleep(3000).then(() => {
+        yellow();
+        return sleep(1000)
+      }).then(() => {
+        red();
+        return sleep(2000)
+      }).then(go)
+    }
+    go();
+    console.log(1)
+  </script>
+</body>
+
+</html>
