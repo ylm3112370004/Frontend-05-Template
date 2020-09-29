@@ -1,8 +1,10 @@
 学习笔记
 
 # TicTacToe
-1. TicTacToe：扫描二维码开始游戏 GO
+-  TicTacToe：扫描二维码开始游戏 GO
 ![TicTacToe二维码图片](http://qhewqxg9u.hb-bkt.clouddn.com/ticTacToe.png)
+
+- github部署地址：https://github.com/ylm3112370004/TicTacToe/
 
 ## css 
 inline-block  默认baseline ==》 middle
