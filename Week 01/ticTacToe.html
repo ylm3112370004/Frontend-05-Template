@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TicTacToe</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    main {
+      flex-grow: 1;
+    }
+
+    main .cell {
+      display: inline-block;
+      width: 100px;
+      height: 100px;
+      vertical-align: middle;
+      background-color: #00b894;
+      border: 1px solid white;
+
+      line-height: 100px;
+      text-align: center;
+      font-size: 50px;
+    }
+
+    main>.history {
+      display: flex;
+      justify-content: center;
+    }
+
+    main>.history>button {
+      padding: 10px 16px;
+      margin-top: 40px;
+      font-size: 28px;
+      color: #333;
+      border: none;
+      outline: none;
+      border-radius: 4px;
+      background-color: #00b894;
+      box-shadow: 0 0 4px 4px rgba(0, 0, 0, .3);
+    }
+
+    footer {
+      padding: 10px;
+      color: #666;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>TicTacToe</h1>
+    <p>点击方格落子</p>
+  </header>
+  <main>
+    <div id="board"></div>
+    <div class="history"><button id="start">开始游戏</button></div>
+  </main>
+  <footer>
+    规则
+    <ol>
+      <li>两种类型交替落子</li>
+      <li>同一类型的3个棋子首先连成一条直线后即为赢</li>
+    </ol>
+  </footer>
+</body>
+<script>
+  let pattern = [
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0],
+  ];
+  let color = 1; // 2:X; 1:O; 0:null
+  let gameOver = false; // 标识当前游戏结束
+  function setGameOverTrue() {
+    gameOver = true;
+  }
+  function setGameOverFalse() {
+    gameOver = false;
+  }
+  function show(pattern) {
+    let board = document.getElementById('board');
+    board.innerHTML = "";
+    for (let i = 0; i < pattern.length; i++) {
+      for (let j = 0; j < pattern[i].length; j++) {
+        let cell = document.createElement('div');
+        cell.classList.add('cell');
+        cell.addEventListener('click', () => userMove(j, i), { once: true }); // 用户下棋
+        if (pattern[i][j]) {
+          cell.innerText = pattern[i][j] === 2 ? "X" :
+            pattern[i][j] === 1 ? "O" : "";
+        }
+        board.appendChild(cell);
+      }
+      board.appendChild(document.createElement('br'));
+    }
+  }
+  function userMove(x, y) {
+    if (pattern[y][x]) { // 如果方格内有值，不允许再次落子
+      return;
+    }
+    if (gameOver) { // 游戏结束，不允许落子
+      alert('game is over!');
+      return;
+    }
+    // 1. 下棋：改变棋盘的内容
+    pattern[y][x] = color;
+    // 2. 重新渲染棋盘
+    show(pattern);
+
+    if (check(pattern, color)) {
+      alert(color === 2 ? 'X is winner' : color === 1 ? "O is winner" : "");
+      setGameOverTrue();
+    }
+    // 3. 修改当前角色
+    color = pattern.length - color;
+
+    // 4. 判断是否要赢
+    computerMove(pattern, color);
+  }
+  function computerMove() {
+    // 1. 获取当前最好位置
+    let point = bestChoice(pattern, color).point
+    if (!point) {
+      alert('game is over!');
+      setGameOverTrue();
+      return;
+    }
+    pattern[point[1]][point[0]] = color;
+    // 2. 渲染棋盘
+    show(pattern);
+    // 3. 判断当前color是否赢
+    if (check(pattern, color)) {
+      alert(color === 2 ? 'X is winner' : color === 1 ? "O is winner" : "");
+      setGameOverTrue();
+    }
+    // 4. 修改当前角色
+    color = 3 - color;
+  }
+  function check(pattern, color) {
+    // 横向
+    for (let i = 0; i < pattern.length; i++) {
+      let win = true;
+      for (let j = 0; j < pattern[i].length; j++) {
+        if (pattern[i][j] !== color) {
+          win = false;
+          break;
+        }
+      }
+      if (win) {
+        return true;
+      }
+    }
+    // 纵向
+    for (let i = 0; i < pattern.length; i++) {
+      let win = true;
+      for (let j = 0; j < pattern[i].length; j++) {
+        if (pattern[j][i] !== color) {
+          win = false;
+          break;
+        }
+      }
+      if (win) {
+        return true;
+      }
+    }
+    // 左斜向
+    {
+      let win = true;
+      for (let i = 0; i < pattern.length; i++) {
+        if (pattern[i][i] !== color) {
+          win = false;
+          break;
+        }
+      }
+      if (win) {
+        return true;
+      }
+    }
+    // 右斜向
+    {
+      let win = true;
+      for (let i = 0; i < pattern.length; i++) {
+        if (pattern[pattern.length - 1 - i][i] !== color) {
+          win = false;
+          break;
+        }
+      }
+      if (win) {
+        return true;
+      }
+    }
+    return false;
+  }
+  function willWin(pattern, color) {
+    outer: for (let i = 0; i < pattern.length; i++) {
+      for (let j = 0; j < pattern[i].length; j++) {
+        if (pattern[i][j] === 0) {
+          let tmp = clone(pattern)
+          tmp[i][j] = color;
+          if (check(tmp, color)) {
+            return [j, i]; // 返回一个点
+            break;
+          }
+        }
+      }
+    }
+    return null;
+  }
+  function bestChoice(pattern, color) {
+    let p = null;
+    if (p = willWin(pattern, color)) {
+      return {
+        point: p,
+        result: 1,
+      }
+    }
+    let result = -2;
+    let point = null;
+    for (let i = 0; i < pattern.length; i++) {
+      for (let j = 0; j < pattern[i].length; j++) {
+        let tmp = clone(pattern);
+        if (tmp[i][j]) {
+          continue
+        }
+        tmp[i][j] = color;
+        let r = bestChoice(tmp, 3 - color).result;  // -1 0 1
+        if (-r > result) {
+          result = -r;
+          point = [j, i]
+        }
+      }
+    }
+    return {
+      point: point,
+      result: point ? result : 0
+    }
+  }
+  function reStartGame() {
+    document.getElementById('start').addEventListener('click', () => {
+      pattern = [
+        [0, 0, 0],
+        [0, 0, 0],
+        [0, 0, 0],
+      ];
+      setGameOverFalse();
+      show(pattern)
+    })
+  }
+  function clone(pattern) {
+    return JSON.parse(JSON.stringify(pattern));
+  }
+  show(pattern);
+  reStartGame();
+</script>
+
+</html>

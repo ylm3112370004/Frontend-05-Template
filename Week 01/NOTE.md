@@ -24,9 +24,8 @@ inline-block  默认baseline ==》 middle
 
 ### 胜负剪枝 （win-lost）
 
-一个点能赢，不能保证赢的最多
-
-
+一个点能赢，不能保证赢的最多，五子棋中练习
+当遍历的过程复杂时，遍历的深度需要控制
 
 ### 一维数组 代替 二维数组
 
@@ -34,20 +33,37 @@ inline-block  默认baseline ==》 middle
 
 ### break 双层 需要添加 outer
 
-outer:for() {
-  for() {
-    break;
-  }
-}
-
-### 一维数据 
-使用 新的clone方法
 ```javascript
-function clone(pattern) {
-  return Object.create(pattern)
+function willWin(pattern, color) {
+  outer:for(let i=0; i<pattern.length; i++) {
+    for(let j=0; j<pattern[i].length; j++) {
+      if(pattern[i][j] === 0) {
+        let tmp = clone(pattern)
+        tmp[i][j] = color;
+        if(check(tmp, color)) {
+          return [j, i]; // 返回一个点
+          break;
+        }
+      }
+    }
+  }
+  return null;
 }
 ```
 
+### 一维数据 浅拷贝
+一维数据中 `Object.create(obj)` 以obj为原型,
+如果修改数组中的值，那么
+
+```javascript
+function clone(pattern) {
+  return Object.create(pattern);
+}
+let arr = [1,1,1,1,1,1,1,1,1,1];
+let obj = Object.create(arr);
+obj[3] = 4;
+console.log(obj);
+```
 
 # 异步编程 AP中
 
