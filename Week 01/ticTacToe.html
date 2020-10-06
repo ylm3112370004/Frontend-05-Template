@@ -93,7 +93,7 @@
       for (let j = 0; j < pattern[i].length; j++) {
         let cell = document.createElement('div');
         cell.classList.add('cell');
-        cell.addEventListener('click', () => userMove(j, i), { once: true }); // 用户下棋
+        cell.addEventListener('click', () => userMove(j, i)); // 用户下棋
         if (pattern[i][j]) {
           cell.innerText = pattern[i][j] === 2 ? "X" :
             pattern[i][j] === 1 ? "O" : "";

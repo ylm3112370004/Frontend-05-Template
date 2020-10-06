@@ -70,6 +70,15 @@ obj[3] = 4;
 console.log(obj);
 ```
 
+### 添加监听事件时 {once: true}
+
+```javascript
+cell.addEventListener('click', () => userMove(j, i), { once: true });
+// 其中{once: true}不会生效，
+// 因为调用show时，所有节点重新渲染，每个节点重新添加了监听事件，
+// 所以需要在点击后判断。
+```
+
 # 异步编程 AP中
 
 如果 涉及到时间：
