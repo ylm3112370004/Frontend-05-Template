@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>启发式寻路2 二叉堆</title>
+  <style>
+    #container {
+      width: 700px;
+    }
+
+    #container::after {
+      content: "";
+      display: block;
+      clear: both;
+    }
+
+    .cell {
+      float: left;
+      width: 6px;
+      height: 6px;
+      line-height: 4px;
+      border-right: 1px solid white;
+      border-bottom: 1px solid white;
+      background-color: grey;
+    }
+
+    .wall {
+      background-color: black;
+    }
+
+    .selected {
+      background-color: lightgreen;
+    }
+
+    .center {
+      background-color: red;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="container"></div>
+  <button id="save">save</button>
+</body>
+<script>
+  let container = document.getElementById('container');
+  let map = localStorage['map'] ? JSON.parse(localStorage['map']) : Array(10000).fill(0);
+  for (let j = 0; j < 100; j++) {
+    for (let i = 0; i < 100; i++) {
+      let cell = document.createElement('div');
+      cell.classList.add('cell');
+      if (map[j * 100 + i]) {
+        cell.classList.add('wall');
+      }
+      if (i === 49 && j === 49) {
+        cell.classList.add('center');
+      }
+      cell.addEventListener('mousemove', function () {
+        if (mousedown) {
+          if (clear) {
+            map[j * 100 + i] = 0;
+            cell.classList.remove('wall');
+          } else {
+            map[j * 100 + i] = 1;
+            cell.classList.add('wall');
+          }
+        }
+      })
+      container.appendChild(cell);
+    }
+  }
+  let mousedown = false;
+  let clear = false;
+  document.addEventListener('mousedown', function (e) {
+    mousedown = true;
+    clear = (e.which === 3)
+  })
+  document.addEventListener('mouseup', () => mousedown = false);
+  document.addEventListener('contextmenu', (e) => e.preventDefault())
+  document.getElementById('save').addEventListener('click', function () {
+    localStorage['map'] = JSON.stringify(map);
+  })
+
+  class Sorted {
+    constructor(data, compare) {
+      this.data = data.slice(); // 从零开始
+      this.compare = compare || ((a, b) => a - b);
+    }
+    get length() {
+      return this.data.length;
+    }
+    shift() {
+      if(this.data.length === 0) return;
+      let removeValue = this.data.shift();
+      this.siftDown(0);
+      return removeValue;
+    }
+    push(v) {
+      if (v === null) { return false; }
+      this.data.push(v);
+      this.siftUp(this.data.length - 1);
+      return true;
+    }
+    swap(array, a, b) {
+      let tmp = array[a];
+      array[a] = array[b];
+      array[b] = tmp;
+    }
+    getParentIndex(index) {
+      return Math.floor((index-1) / 2);
+    }
+    getLeftIndex(index) {
+      return 2*index + 1;
+    }
+    getRightIndex(index) {
+      return 2*index + 2;
+    }
+    siftUp(index) {
+      let parentIndex = this.getParentIndex(index);
+      while(index > 0 && this.compare(this.data[parentIndex], this.data[index])>0) {
+        this.swap(this.data, parentIndex, index);
+        index = parentIndex;
+        parentIndex = this.getParentIndex(index);
+      }
+    }
+    // 堆化
+    siftDown(index) {
+      let element = index;
+      let size = this.data.length;
+      let leftIndex = this.getLeftIndex(index);
+      let rightIndex = this.getRightIndex(index);
+      if(leftIndex < size && this.compare(this.data[element], this.data[leftIndex])>0) {
+        element = leftIndex;
+      }
+      if(rightIndex < size && this.compare(this.data[element], this.data[rightIndex]) > 0) {
+        element = rightIndex;
+      }
+      if(index !== element) {
+        this.swap(this.data, element, index);
+        this.siftDown(element);
+      }
+    }
+  }
+
+  async function findPath(map, start, end) {
+    let queue = new Sorted([start], (a, b) => distance(a) - distance(b));
+    let table = Object.create(map);
+    async function insert(x, y, pre) {
+      if (x < 0 || x >= 100 || y < 0 || y >= 100) {
+        return;
+      }
+      if (table[y * 100 + x]) { return; }
+      table[y * 100 + x] = pre;
+      container.children[y * 100 + x].classList.add('selected');
+      queue.push([x, y]);
+    }
+    function distance(point) {
+      return (point[0] - end[0]) ** 2 + (point[1] - end[1]) ** 2;
+    }
+    while (queue.length) {
+      let [x, y] = queue.shift();
+      let path = [];
+      if (x === end[0] && y === end[1]) {
+        path.push([x, y]);
+        container.children[y * 100 + x].style.backgroundColor = "purple";
+        while (x !== start[0] || y !== start[1]) {
+          let pre = table[y * 100 + x];
+          [x, y] = pre;
+          path.push([x, y]);
+          container.children[y * 100 + x].style.backgroundColor = "purple";
+        }
+        return path;
+      }
+      await insert(x - 1, y, [x, y]);  // 左
+      await insert(x, y - 1, [x, y]);  // 上
+      await insert(x + 1, y, [x, y]);  // 右
+      await insert(x, y + 1, [x, y]);  // 下
+
+      await insert(x - 1, y - 1, [x, y]);// 左上 
+      await insert(x + 1, y - 1, [x, y]);// 右上 
+      await insert(x + 1, y + 1, [x, y]);// 右下
+      await insert(x - 1, y + 1, [x, y]);// 左下 
+    }
+    return null;
+  }
+
+  let path = findPath(map, [0, 0], [50, 50]);
+  console.log(path.length, path)
+</script>
+
+</html>
