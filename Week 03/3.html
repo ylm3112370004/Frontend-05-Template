@@ -11,7 +11,6 @@
     let regexp = /([0-9\.]+)|([ \t]+)|(\r\n)|(\*)|(\/)|(\+)|(\-)/g;
     let dictionary = ["Number", "WhiteSpace", "LineTerminator", "*", "/", "+", "-"];
     
-
     function* tokenize(source) {
       let result = null;
       let lastIndex = 0;
@@ -47,16 +46,26 @@
       }
     }
 
-    function Expression(tokens) {
-
+    function Expression(source) {
+      if (source[0].type === "AdditiveExpression" && source[1].type === "EOF") {
+        let node = {
+          type: "Expression",
+          children: [source.shift(), source.shift()]
+        }
+        source.unshift(node);
+        return node;
+      }
+      AdditiveExpression(source);
+      return Expression(source);
     }
 
     function AdditiveExpression(source) {
-      if (source[0].type === "Number") {
+      if (source[0].type === "MultiplicativeExpression") {
         let node = {
           type: "AdditiveExpression",
           children: source[0]
         }
+        source[0] = node;
         return AdditiveExpression(source);
       }
       if (source[0].type === "AdditiveExpression" && source[1] && source[1].type === "+") {
@@ -133,7 +142,7 @@
       return MultiplicativeExpression(source);
     }
 
-    console.log(MultiplicativeExpression(source));
+    console.log(Expression(source));
   </script>
 </body>
 </html>
