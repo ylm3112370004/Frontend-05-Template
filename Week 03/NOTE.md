@@ -3,6 +3,7 @@
 ## 四则运算
 
 1. 表达式
+```javascript
 <Expression> ::= <AdditiveExpression>
 
 <AdditiveExpression> ::=
@@ -14,7 +15,7 @@
   <Number>
   | <MultiplicativeExpression><*><Number>
   | <MultiplicativeExpression></><Number>
-
+```
 ## 正则表达式
 1. regexp
 
