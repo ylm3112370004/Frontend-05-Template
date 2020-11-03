@@ -1,4 +1,4 @@
-
+# 字符串相关算法
 
 
 ## 字典树
@@ -29,3 +29,17 @@ const recursion = (level, params) =>{
   
 }
 ```
+
+## KMP
+KMP算法（Knuth-Morris-Pratt）的思想是：当子串与目标字符串不匹配时，其实那你已经知道了前面已经成功那一部分的字符
+### leetcode
+- ![28. 实现 strStr()](https://leetcode-cn.com/problems/implement-strstr/)
+
+### 跳转表格
+a b c d a b c e
+0 0 0 0 0 1 2 3
+
+a b a b a b c
+0 0 0 1 2 3 0   table[i] = j
+
+if (j > 0) j = table[j];
