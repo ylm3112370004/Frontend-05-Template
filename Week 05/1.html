@@ -9,16 +9,44 @@
 
 <body>
   <script>
+    let callbacks = [];
+    let usedReactivities = new Map();
+
     let object = {
       a: 1,
       b: 2
     }
 
-    let po = new Proxy(object, {
-      set(obj, prop) {
-        console.log(obj, prop);
-      }
+    let po = reactive(object)
+
+    effect(() => {
+      console.log(po.a);
     })
+
+    function effect(callback) {
+      // callbacks.push(callback);
+      usedReactivities = [];
+      callback();
+      for (let reactivity of usedReactivities) {
+        // if (callback.has())
+      }
+    }
+
+    function reactive(object) {
+      return new Proxy(object, {
+        set(obj, prop, val) {
+          obj[prop] = val;
+          for (let callback of callbacks) {
+            callback();
+          }
+          return obj[prop];
+        },
+        get(obj, prop) {
+          usedReactivities[obj] = prop;
+          return obj[prop];
+        }
+      })
+    }
   </script>
 </body>
 
