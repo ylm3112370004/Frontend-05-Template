@@ -1,4 +1,4 @@
-
+// 只处理了4字节的 有到6字节的 不是很常用
 function getUTF8(str) {
   let utf8Arr = [];
   for (let c of str) {

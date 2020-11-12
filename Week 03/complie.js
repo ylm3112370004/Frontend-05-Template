@@ -1,0 +1,167 @@
+    // 词法分析
+    const State = {
+      Initial: 'Initial',
+      Number: "Number",
+      Plus: '+',
+      Minus: '-',
+      Star: '*',
+      Slash: '/',
+      Whitespace: "Whitespace",
+      LineTerminator: "LineTerminator",
+    }
+    
+    class Token {
+      /**
+       * @param {*} text 
+       * @param {*} type Number/Operator
+       */
+      constructor(text, type) {
+        this.text = text;
+        this.type = type;
+      }
+    }
+    // 也可用正则表达式
+    function isNumber(c) {
+      if (c === '1' 
+      || c === '2' 
+      || c === '3' 
+      || c === '4' 
+      || c === '5' 
+      || c === '6' 
+      || c === '7' 
+      || c === '8' 
+      || c === '9' 
+      || c === '0' ) {
+        return true;
+      }
+      return false;
+    }
+    let tokens = [];
+    let token = new Token();
+    let text = "";
+    
+    function initToken(c) {
+      if (text.length) {
+        token.text = text;
+        tokens.push(token);
+    
+        token = new Token();
+        text = "";
+      }
+      let newState = State.Initial;
+      if (isNumber(c)) {
+        token.type = State.Number;
+        text += c;
+        newState = State.Number
+      } else if (c === "+") {
+        token.type = State.Plus;
+        text += c;
+        token.type = State.Plus;
+      } else if (c === "-") {
+        token.type = State.Minus;
+        text += c;
+        token.type = State.Minus;
+      } else if (c === "*") {
+        token.type = State.Star;
+        text += c;
+        token.type = State.Star;
+      } else if (c === "/") {
+        token.type = State.Slash;
+        text += c;
+        token.type = State.Slash;
+      } else {
+        return State.Initial;
+      }
+      return newState;
+    }
+    
+    function tokenize(str) {
+      let state = State.Initial;
+      for (let c of str) {
+        switch (state) {
+          case State.Initial:
+            state = initToken(c);
+            break;
+          case State.Number:
+            if (isNumber(c)) {
+              text += c;
+            } else {
+              state = initToken(c);
+            }
+            break;
+          case State.Plus:
+          case State.Minus:
+          case State.Star:
+          case State.Slash:
+            state = initToken(c);
+            break;
+        }
+      }
+      initToken();
+      return tokens;
+    }
+    
+    console.log(tokenize("32*6*2"));
+    
+    // MultiplicativeExpression::=<Number> | 
+    //   <MultiplicativeExpression>"*"</MultiplicativeExpression> |
+    //   <MultiplicativeExpression>"/</MultiplicativeExpression>
+    
+    function MultiplicativeExpression(source) {
+      if (source[0].type === State.Number) {
+        let node = {
+          type: "MultiplicativeExpression",
+          children: [source[0]]
+        }
+        source[0] = node;
+        // return MultiplicativeExpression(source);
+      } 
+      if (source[0].type === "MultiplicativeExpression" && source[1] && source[1].type === "*" ) {
+        let node = {
+          type: "MultiplicativeExpression",
+          operator: "*",
+          children: []
+        }
+        node.children.push(source.shift());
+        node.children.push(source.shift());
+        node.children.push(source.shift());
+        source.unshift(node);
+        return MultiplicativeExpression(source);
+      }
+      if (source[0].type === "MultiplicativeExpression" && source[1] && source[1].type === "/" ) {
+        let node = {
+          type: "MultiplicativeExpression",
+          operator: "/",
+          children: []
+        }
+        node.children.push(source.shift());
+        node.children.push(source.shift());
+        node.children.push(source.shift());
+        source.unshift(node);
+        return MultiplicativeExpression(source);
+      }
+      console.log(source)
+    }
+    const source = [].concat(tokens)
+    MultiplicativeExpression(source);
+    
+    
+    // 怎么解释执行？
+    
+    function execute(node) {
+      if (node.type === "MultiplicativeExpression") {
+        if (node.operator === "*") {
+          return execute(node.children[0]) * execute(node.children[2]);
+        }
+        if (node.operator === "/") {
+          return execute(node.children[0]) / execute(node.children[2]);
+        }
+        return execute(node.children[0])
+      }
+      if (node.type === "Number") {
+        return Number(node.text)
+      }
+    }
+    
+    console.log(execute(source[0]))
+    

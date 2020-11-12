@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="text"></div>
+  <script>
+    const zeroPad = num => {
+      let len = String(num).length;
+      let str = '00000000'.slice(len) + num;
+      return str;
+    }
+
+    const textToBinary = username => (
+      username.split('').map(char =>
+        zeroPad(char.charCodeAt(0).toString(2))).join(' ')
+    );
+
+    let str = textToBinary("ylm");
+
+    const binaryToZeroWidth = binary => {
+      return binary.split('').map(binaryNum => {
+        const num = parseInt(binaryNum, 10);
+        if (num === 1) {
+          return '&#8203;';
+        } else if (num === 0) {
+          return '&#8204;';
+        }
+        return '&#8205;';
+      }).join('&#8206;')
+    }
+
+    let zeroWith = binaryToZeroWidth(str);
+    console.log(zeroWith);
+    document.getElementById('text').innerHTML = "test" + zeroWith;
+
+    const zeroWithToStr = (zeroWithStr) => {
+      return zeroWithStr.split("&#8206;").map((c) => {
+        if (c === "&#8203;") {
+          return 1;
+        } else if (c === "&#8204;") {
+          return 0;
+        } else {
+          return ' ';
+        }
+      }).join('').split(' ').map(binaryNum => String.fromCodePoint(parseInt(binaryNum, 2))).join('');
+    }
+
+    let retStr = zeroWithToStr(zeroWith);
+  </script>
+</body>
+
+</html>
