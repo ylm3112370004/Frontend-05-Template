@@ -1,19 +1,18 @@
-const Request = require('./Request');
+const Request = require('./Request.js'); 
 
 void async function() {
   let request = new Request({
     method: "POST",
     path: '/',
     host: '127.0.0.1',
-    port: '8088',
+    port: 8088,
     headers: {
-      ["X-Foo2"]: 'customed',
+      ["X-foo"]: 'customed'
     },
     body: {
-      name: 'winter'
+      name: 'ylm'
     }
   });
-
   let response = await request.send();
   console.log(response);
 }();
