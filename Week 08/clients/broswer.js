@@ -10,7 +10,7 @@ void async function() {
       ["X-foo"]: 'customed'
     },
     body: {
-      name: 'ylm'
+      name: '杨腊梅'
     }
   });
   let response = await request.send();

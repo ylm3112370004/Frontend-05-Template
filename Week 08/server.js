@@ -1,5 +1,4 @@
 const http = require('http');
-const { type } = require('os');
 
 http.createServer((request, response) => {
   let body = [];
