@@ -26,3 +26,11 @@ URL -> BitMap
 - 不同的Content-Type对body的格式有影响
 application/json   JSON.stringify(body)
 application/x-www-form-urlencoded    key=value&key1=value1...
+
+```javascript
+POST / HTTP/1.1
+Host: 127.0.0.1
+Content-Type: application/x-www-form-urlencoded
+
+// name=%E6%9D%A8%E8%85%8A%E6%A2%85&gender=female  字符会需要编码
+```
