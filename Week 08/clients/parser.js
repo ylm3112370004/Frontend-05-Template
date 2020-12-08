@@ -62,6 +62,7 @@ function tagName(c) {
   } else if (c == "/") {
     return selfClosingStartTag;
   } else if (c == ">") {
+    emit(currentToken);
     return data;
   } else {
     return tagName;
