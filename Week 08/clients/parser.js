@@ -15,6 +15,8 @@ function addCSSRules(text) {
 
 function computeCSS(element) {
   console.log(element);
+  // reverse 标签匹配是当前元素逐级的往外匹配
+  let elements = stack.slice().reverse();
 
 }
 
