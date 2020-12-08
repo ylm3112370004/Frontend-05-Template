@@ -13,6 +13,11 @@ function addCSSRules(text) {
   rules.push(...ast.stylesheet.rules);
 }
 
+function computeCSS(element) {
+  console.log(element);
+
+}
+
 function emit(token) {
   let top = stack[stack.length-1];  // 栈顶
 
@@ -33,6 +38,9 @@ function emit(token) {
         });
       }
     }
+    
+    // 计算CSS的时机 在element 入栈前    
+    computeCSS(element);
 
     top.children.push(element);
     element.parent = top;
