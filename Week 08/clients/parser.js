@@ -6,7 +6,6 @@ let currentTextNode = null;
 let stack = [{type: "document", children:[]}]; // document 初始根节点
 
 function emit(token) {
-  if (token.type === "text") return;
   let top = stack[stack.length-1];  // 栈顶
 
   if (token.type == "startTag") {
@@ -41,6 +40,15 @@ function emit(token) {
       stack.pop();
     }
     currentTextNode = null;
+  } else if (token.type == "text") {
+    if (currentTextNode == null) {
+      currentTextNode = {
+        type: "text",
+        content: ""
+      }
+      top.children.push(currentTextNode);
+    }
+    currentTextNode.content += token.content;
   }
 }
 
