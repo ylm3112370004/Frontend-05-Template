@@ -34,3 +34,7 @@ Content-Type: application/x-www-form-urlencoded
 
 // name=%E6%9D%A8%E8%85%8A%E6%A2%85&gender=female  字符会需要编码
 ```
+
+1. 开始标签
+2. 结束标签
+3. 自封闭标签
