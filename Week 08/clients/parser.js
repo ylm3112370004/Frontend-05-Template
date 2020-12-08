@@ -1,9 +1,17 @@
 const EOF = Symbol("EOF");
+const css = require('css');
 
 let currentToken = null;
 let currentAttribute = null;
 let currentTextNode = null;
 let stack = [{type: "document", children:[]}]; // document 初始根节点
+
+let rules = []; // 保存收集到的规则
+function addCSSRules(text) {
+  var ast = css.parse(text);
+  console.log(JSON.stringify(ast, null, ""));
+  rules.push(...ast.stylesheet.rules);
+}
 
 function emit(token) {
   let top = stack[stack.length-1];  // 栈顶
@@ -35,8 +43,12 @@ function emit(token) {
     currentTextNode = null;
   } else if(token.type == "endTag") {
     if (top.tagName != token.tagName) {
-      throw Error("not match");
+      throw Error("Tag start end doesn't match!");
     } else {
+      //++++++++++遇到style标签时，执行添加CSS规则的操作+++++++++++++++//
+      if (top.tagName === "style") {
+        addCSSRules(top.children[0].content); // top.children[0].content 获取CSS文本节点
+      }
       stack.pop();
     }
     currentTextNode = null;

@@ -1,0 +1,23 @@
+{
+  "name": "Frontend-05-Template",
+  "version": "1.0.0",
+  "description": "## week01",
+  "main": "test.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ylm3112370004/Frontend-05-Template.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ylm3112370004/Frontend-05-Template/issues"
+  },
+  "homepage": "https://github.com/ylm3112370004/Frontend-05-Template#readme",
+  "dependencies": {
+    "css": "^3.0.0"
+  }
+}

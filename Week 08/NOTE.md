@@ -11,7 +11,7 @@
 URL -> BitMap
 
 1. 浏览器首先使用HTTP协议或者HTTPS协议，向服务端请求页面
-2. 待补充
+2. html parse
 3. 待补充
 4. 待补充
 5. 待补充
@@ -56,3 +56,14 @@ Content-Type: application/x-www-form-urlencoded
 - 自封闭节点可视为入栈后立刻出栈   其实没有入栈
 - 任何元素的父元素是它入栈钱的栈顶
 
+
+## CSS计算 带CSS的DOM树  css computing
+
+css 语法和词法分析
+
+准备工作 安装 css取法分析器 添加launch.json使用调试
+
+1. 第一步
+- 遇到style标签时，我们把CSS规则保存起来
+- 这里我们调用CSS Parser来分析CSS规则
+- 必须要仔细研究此库分析CSS规则的格式
