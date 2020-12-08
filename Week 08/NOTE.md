@@ -38,3 +38,8 @@ Content-Type: application/x-www-form-urlencoded
 1. 开始标签
 2. 结束标签
 3. 自封闭标签
+
+
+## 第四步总结
+- 在状态机中，除了状态迁移，我们还会要加入业务逻辑
+- 在标签结束状态提交标签token
