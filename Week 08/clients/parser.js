@@ -1,5 +1,4 @@
 const EOF = Symbol("EOF");
-const { match } = require('assert');
 const css = require('css');
 
 let currentToken = null;
@@ -15,11 +14,28 @@ function addCSSRules(text) {
 }
 
 function match(element, selector) {
+  // 去除文本选择器
+  if (!selector || !element.attributes) return false;
+
+  if (selector.charAt(0) === "#") { // id
+    let attr = element.attributes.filter(attr => attr.name === "id")[0];
+    if (attr && attr.value === selector.replace("#", "")) {
+      return true;
+    }
+  } else if (selector.charAt(0) === ".") { // class
+    let attr = element.attributes.filter(attr => attr.name === "class")[0];
+    if (attr && attr.value === selector.replace(".", "")) {
+      return true;
+    }
+  } else { // tag
+     if (element.tagName === selector) {
+       return true;
+     }
+  }
   return false;
 }
 
 function computeCSS(element) {
-  console.log(element);
   // reverse 标签匹配是当前元素逐级的往外匹配
   let elements = stack.slice().reverse();
   if(!element.computeStyle) 
@@ -35,6 +51,7 @@ function computeCSS(element) {
       let matched = false;
       let j = 1;  // 当前选择器的位置
       for (let i = 0; i < elements.length; i++) { // i 元素的位置
+        if (j === selectorParts.length) break;
         if(match(elements[i]), selectorParts[j]) {
           j++;
         }
@@ -64,7 +81,7 @@ function emit(token) {
     element.tagName = token.tagName;
     // 除 type、tagName外的所有token中的属性，添加到element.attributes中
     for (let p in token) {
-      if (p != "type" && p != "tagName" && p != "isSelfClosing") {
+      if (p != "type" && p != "tagName") {
         element.attributes.push({
           name: p,
           value: token[p]
