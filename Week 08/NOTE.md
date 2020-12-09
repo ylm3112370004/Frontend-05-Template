@@ -11,8 +11,8 @@
 URL -> BitMap
 
 1. 浏览器首先使用HTTP协议或者HTTPS协议，向服务端请求页面
-2. html parse
-3. 待补充
+2. html parse =》 dom树
+3. 在DOM树上添加渲染所需的CSS
 4. 待补充
 5. 待补充
 6. 待补充
@@ -132,5 +132,19 @@ element.computedStyle = {
   'background-color': {value: "#ff1111", ...},
   'width': {value: '30px', ....},
 };
+
+缺陷: 同一元素的不同不同规则没有全部应用
+
+7. CSS计算 | specificity的计算逻辑
+- CSS规则根据specificity和后来优先规则覆盖
+- specificity四元组，越左边优先级越高
+- 一个CSS规则的specificity根据包含简单选择器相加而成
+
+Priority 优先级
+specificity 特征 专指的程度
+
+四元组
+[0,      0,    0,      0]
+inline   id   class  tag
 
 
