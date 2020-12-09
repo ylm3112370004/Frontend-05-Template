@@ -81,3 +81,31 @@ css 语法和词法分析
 div div    #myid
 不知道匹配      一定匹配当前元素
 那个元素
+
+4. 第四步 选择器与元素的匹配
+- 选择器也要从当前元素向外排列
+- 复杂选择器拆分成当个选择器，用循环匹配父元素
+
+```javascript
+// 全局
+rules: [[div div #myid], [main .box]];
+stack [document, element, element, ....., element]
+
+// 函数传入当前元素 
+element
+
+// 为例比较方便
+elements = stack.reverse();
+
+for (let rule of rules) {
+  rule.split(" ").reverse();  // #myid, div, div  以第一个为例
+
+  element 《===》rule[0] 比较
+
+  let j = 1;
+
+  for(let i = 0; i < elements.length; i++) {
+    比较
+  }
+} 
+```
