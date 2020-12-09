@@ -108,9 +108,7 @@ function computeCSS(element) {
           }
         }
       }
-      console.log(element.computedStyle);
     }
-
   }
 }
 
