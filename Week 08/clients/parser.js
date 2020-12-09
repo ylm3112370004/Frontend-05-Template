@@ -1,4 +1,5 @@
 const EOF = Symbol("EOF");
+const { match } = require('assert');
 const css = require('css');
 
 let currentToken = null;
@@ -13,11 +14,41 @@ function addCSSRules(text) {
   rules.push(...ast.stylesheet.rules);
 }
 
+function match(element, selector) {
+  return false;
+}
+
 function computeCSS(element) {
   console.log(element);
   // reverse 标签匹配是当前元素逐级的往外匹配
   let elements = stack.slice().reverse();
+  if(!element.computeStyle) 
+    element.computeStyle = {};
 
+    for (let rule of rules) {
+      let selectorParts = rule.selectors[0].split(" ").reverse();
+
+      if (!match(element, selectorParts[0])) {
+        continue;
+      }
+
+      let matched = false;
+      let j = 1;  // 当前选择器的位置
+      for (let i = 0; i < elements.length; i++) { // i 元素的位置
+        if(match(elements[i]), selectorParts[j]) {
+          j++;
+        }
+      }
+      if (j >= selectorParts.length) {
+        matched = true;
+      }
+
+      if (matched) {
+        // 如果匹配到，要加入
+        console.log("ELement", element, "matched rule", rule);
+      }
+
+    }
 }
 
 function emit(token) {
