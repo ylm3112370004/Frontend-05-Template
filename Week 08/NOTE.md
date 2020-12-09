@@ -56,6 +56,33 @@ Content-Type: application/x-www-form-urlencoded
 - 自封闭节点可视为入栈后立刻出栈   其实没有入栈
 - 任何元素的父元素是它入栈钱的栈顶
 
+```javascript
+// element 的数据结构
+let element = {
+  type: "element",
+  parent: element,
+  children: [
+    {element, ...}// 构成DOM树
+  ],
+  attributes: [
+    {name: "class", value: ""},
+    {name: "id", value: ""},
+    {name: "href", value: ""},
+    //...
+  ],
+  computedStyle: {  // sp是一个四元组
+    'background-color': {value: "#ff1111", sp: [0, 0, 0, 0]}, 
+    'width': {value: '30px', sp: []},
+    //...
+  }
+}
+
+
+
+
+
+
+```
 
 ## CSS计算 带CSS的DOM树  css computing
 
@@ -148,3 +175,33 @@ specificity 特征 专指的程度
 inline   id   class  tag
 
 
+## 排版/布局
+
+
+### 排版 | 根据浏览器属性进行排版
+flex
+
+三代排版 + 隐约四代
+1. float 
+2. flex：容易实现
+3. grid 更强大
+4. CSS Houdini
+
+row Main Axis
+col Cross Axis
+flex-direction: row
+Main: width x left right
+Cross: height y top bottom
+
+
+row Cross Axis
+col Main Axis
+flex-direction: column
+Main height y top bottom
+Cross width x left right
+
+layout的时机
+
+flex 布局是需要子元素的
+结束标签
+endTag的时候

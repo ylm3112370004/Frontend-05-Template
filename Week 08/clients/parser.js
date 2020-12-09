@@ -1,5 +1,6 @@
 const EOF = Symbol("EOF");
 const css = require('css');
+const layout = require('./layout.js');
 
 let currentToken = null;
 let currentAttribute = null;
@@ -80,7 +81,7 @@ function computeCSS(element) {
     let j = 1;  // 当前选择器的位置
     for (let i = 0; i < elements.length; i++) { // i 元素的位置
       if (j === selectorParts.length) break;
-      if (match(elements[i]), selectorParts[j]) {
+      if (match(elements[i], selectorParts[j])) {
         j++;
       }
     }
@@ -152,6 +153,7 @@ function emit(token) {
       if (top.tagName === "style") {
         addCSSRules(top.children[0].content); // top.children[0].content 获取CSS文本节点
       }
+      layout(top);
       stack.pop();
     }
     currentTextNode = null;
