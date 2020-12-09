@@ -285,6 +285,7 @@ function unQuotedAttributeValue(c) {
 function selfClosingStartTag(c) {
   if (c == ">") {
     currentToken.isSelfClosing = true;
+    emit(currentToken);
     return data;
   } else if (c == EOF) {
 
