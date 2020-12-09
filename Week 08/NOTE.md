@@ -86,6 +86,14 @@ div div    #myid
 - 选择器也要从当前元素向外排列
 - 复杂选择器拆分成当个选择器，用循环匹配父元素
 
+rules :  [rule, rule, rule]
+
+rule : {
+  declaration: [{property: 'width', value: '100px'}, {property: 'background-color', value: '#ff5000'}],
+  selector: ['body div #myid']
+}
+
+
 ```javascript
 // 全局
 rules: [[div div #myid], [main .box]];
@@ -115,3 +123,14 @@ for (let rule of rules) {
 - 根据选择器的类型和元素属性，计算是否与当前元素匹配
 - 这里仅仅实现了三种基本选择器，实际的浏览器中要处理复合选择器
 div#myid.box
+
+
+6. CSS计算 | 生成computed属性
+
+数据结构
+element.computedStyle = {
+  'background-color': {value: "#ff1111", ...},
+  'width': {value: '30px', ....},
+};
+
+

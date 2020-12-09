@@ -38,8 +38,8 @@ function match(element, selector) {
 function computeCSS(element) {
   // reverse 标签匹配是当前元素逐级的往外匹配
   let elements = stack.slice().reverse();
-  if(!element.computeStyle) 
-    element.computeStyle = {};
+  if(!element.computedStyle) 
+    element.computedStyle = {};
 
     for (let rule of rules) {
       let selectorParts = rule.selectors[0].split(" ").reverse();
@@ -62,7 +62,15 @@ function computeCSS(element) {
 
       if (matched) {
         // 如果匹配到，要加入
-        console.log("ELement", element, "matched rule", rule);
+        // console.log("ELement", element, "matched rule", rule);
+        let computedStyle = element.computedStyle;
+        for (let declaration of rule.declarations) {{
+          if (!computedStyle[declaration.property]) {
+            computedStyle[declaration.property] = {};   //方便存储value 以外的值
+          }
+          computedStyle[declaration.property].value = declaration.value;
+        }}
+        console.log(element.computedStyle);
       }
 
     }
