@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .carousel1 {
+      margin: 0 auto;
+      width: 400px;
+      height: 50px;
+      border: 1px solid #000;
+    }
+
+    .carousel {
+      margin: 0 auto;
+      width: 400px;
+      height: 250px;
+      /* overflow: hidden; */
+      white-space: nowrap;
+    }
+
+    .carousel>div {
+      display: inline-block;
+      width: 400px;
+      height: 250px;
+      /* transition: ease 0.5s; */
+    }
+  </style>
+</head>
+
+<body>
+  <div class="carousel1"></div>
+  <div class="carousel">
+    <div class="slider" style="background-color: lightcoral;">1</div><div class="slider" style="background-color: lightblue;">2</div><div class="slider" style="background-color: lightgreen">3</div><div class="slider" style="background-color: lightgrey;">4</div>
+  </div>
+</body>
+<script>
+  let carousel = document.getElementsByClassName("carousel")[0];
+  let children = carousel.children;
+  let count = children.length;
+  let current = 0;
+  carousel.addEventListener("mousedown", event => {
+    let startX = event.clientX;
+    let mouseMove = event => {
+      let dx = event.clientX - startX;
+      for (let offset of [-1, 0, 1]) {
+        
+      }
+    }
+    let mouseUp = event => {
+      document.removeEventListener("mousemove", mouseMove);
+      document.removeEventListeners("mouseup", mouseUp);
+    }
+    document.addEventListener("mousemove", mouseMove);
+    document.addEventListener("mouseup", mouseUp);
+
+  })
+</script>
+
+</html>

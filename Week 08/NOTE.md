@@ -44,6 +44,13 @@ Content-Type: application/x-www-form-urlencoded
 - 在状态机中，除了状态迁移，我们还会要加入业务逻辑
 - 在标签结束状态提交标签token
 
+```javascript
+currentToken = {
+  type: "startTag" | "endTag",
+  tagName: ""
+}
+```
+
 
 ## 第五步总结 属性
 - 属性值分为单引号，双引号，无引号三种写法，一次需要较多状态处理
@@ -76,12 +83,6 @@ let element = {
     //...
   }
 }
-
-
-
-
-
-
 ```
 
 ## CSS计算 带CSS的DOM树  css computing
@@ -200,8 +201,35 @@ flex-direction: column
 Main height y top bottom
 Cross width x left right
 
+编程技巧：当有传入内容有多种情况时，可以定义赋值给指定变量，从而减少if else 判断代码
+
+
 layout的时机
 
 flex 布局是需要子元素的
 结束标签
 endTag的时候
+
+
+### 排版 | 收集元素进行（hang）
+
+分行
+- 根据主轴尺寸，把元素分进行（行）
+- 若设置了no-wrap，则强行分配进第一行
+
+放完后超出width
+新建一行
+
+for loop 处理每一个item的情况
+大致分为三种情况
+1. flex 性质的item
+2. 父元素 nowrap 直接放
+3. 需要计算 子元素的mainSize 与 剩余空间的大小
+
+### 排版 | 计算主轴方向
+
+- 找出所有flex元素
+- 把主轴方向的剩余尺寸按比例分配给这些元素
+- nowrap 若剩余空间为负数，flex 元素等比例压缩 
+
+怎么样分配 mainSpace

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div>
+    <p>
+      <span id="id" class="class test">this is id</div>
+    </p>
+  </div>
+</body>
+<script>
+  function getSelectors() {
+    return [["#id", ".class"], ['p']];
+  }
+  function innerMatch(selectors, element) {
+    for (let i = 0; i < selectors.length; i++) {
+      let selector = selectors[i];
+      if (selector.charAt(0) === "#") {
+        let attr = element.getAttribute("id");
+        if (!(attr && attr === selector.replace("#", ""))) {
+          return false;
+        }
+      } else if (selector.charAt(0) === ".") {
+        let attr = element.getAttribute("class");
+        if (!(attr && attr.indexOf(selector.replace(",", "")))) {
+          return false;
+        }
+      } else {
+        if (!(selector.toUpperCase() === element.tagName)) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+  function match(selector, element) {
+    const sArr = getSelectors(selector);
+
+    let matched = innerMatch(sArr[0], element);
+    if (!match) return false;
+    // 先处理第一个
+
+    let j = 1; // 表示sArr的下标
+    while (element.parentNode) {
+      if (j == sArr.length) return true;
+      let combinedSelector = sArr[j];
+      element = element.parentNode;
+      if (innerMatch(combinedSelector, element)) {
+        j++;
+      }
+    }
+
+    return false;
+  }
+
+  console.log(match("div #id.class", document.getElementById("id")));
+</script>
+
+</html>

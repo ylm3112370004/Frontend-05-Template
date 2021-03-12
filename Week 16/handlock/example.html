@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <!-- <style>
+    #container {
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+      padding-top: 100%;
+      height: 0px;
+      background-color: white;
+    }
+
+    #container canvas {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) scale(0.5);
+    }
+  </style> -->
+</head>
+
+<body>
+  <div id="container"></div>
+</body>
+<script>
+  const n = 3;
+  const container = document.querySelector('#container');
+  const circles = [];
+
+  const HandLock = {
+    Locker: class Locker {
+      constructor(options = {}) {
+
+      }
+    }
+  }
+  // 使用 需求分析
+  const password = "";
+  const locker = new HandLock.Locker({
+    container: document.querySelector('#container'),
+    check: {
+
+    },
+    update: {
+
+    }
+  })
+
+  // 技术选型   DOM/Canvas/SVG
+  // 1 DOM flex布局 实现响应 斜线的长度和斜率需要计算
+  // 2 Canvas 小细节 1.响应式，2 retina屏上获得清晰的显示效果
+  // 3 SVG 移动兼容性不如DOM和Canvas
+
+  Object.assign(container.style, {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    lineHeight: '100%',
+    overflow: 'hidden',
+    backgroundColor: '#eee'
+  });
+
+  const { width, height } = container.getBoundingClientRect();
+
+  const circleCanvas = document.createElement('canvas');
+  circleCanvas.width = circleCanvas.height = 2 * Math.min(width, height);
+
+  Object.assign(circleCanvas.style, {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)  scale(0.5)'
+  })
+
+  const lineCanvas = circleCanvas.cloneNode(true);
+  const moveCanvas = circleCanvas.cloneNode(true);
+
+  container.appendChild(lineCanvas);
+  container.appendChild(moveCanvas);
+  container.appendChild(circleCanvas);
+
+  container.addEventListener('touchmove', evt => evt.preventDefault(), { passive: false })
+
+  let circleCtx = circleCanvas.getContext('2d'),
+    lineCtx = lineCanvas.getContext('2d'),
+    moveCtx = moveCanvas.getContext('2d'),
+    circleCanvasWidth = circleCanvas.width;
+
+  circleCtx.clearRect(0, 0, circleCanvasWidth, circleCanvasWidth);
+  lineCtx.clearRect(0, 0, circleCanvasWidth, circleCanvasWidth);
+  moveCtx.clearRect(0, 0, circleCanvasWidth, circleCanvasWidth);
+
+  let range = Math.round(circleCanvasWidth / (n + 1));
+
+  for (let i = 1; i <= n; i++) {
+    for (let j = 1; j <= n; j++) {
+      let y = range * i, x = range * j;
+      drawSolidCircle(circleCtx, "#ccc", x, y, 20);
+      let circlePoint = { x, y };
+      circlePoint.pos = [i, j];
+      circles.push(circlePoint);
+    }
+  }
+
+
+
+
+
+
+
+  const handler = evt => {
+    let { clientX, clientY } = evt.changedTouches[0];
+    touchPoint = getCanvasPoint(moveCanvas, clientX, clientY);
+
+    console.log(touchPoint);
+
+
+  }
+
+
+  circleCanvas.addEventListener('touchstart', handler);
+  circleCanvas.addEventListener('touchmove', handler);
+
+
+
+  function getCanvasPoint(canvas, x, y) {
+    let rect = canvas.getBoundingClientRect();
+    console.log(rect);
+  }
+
+  function drawSolidCircle(ctx, color, x, y, r) {
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2, true);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+</script>
+
+</html>

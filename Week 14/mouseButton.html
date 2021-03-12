@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" oncontextmenu="event.preventDefault()">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body ></body>
+<script>
+let element = document.documentElement;
+let isListeningMouse = false;
+element.addEventListener('mousedown', event => {
+  console.log(event.button, event.buttons);
+  const mouseMove = event => {
+    console.log("move");
+  }
+  const mouseUp = event => {
+    
+    // if (event.buttons === 0) {
+      console.log("up");
+      document.removeEventListener("mousemove", mouseMove);
+      document.removeEventListener("mouseup", mouseUp);
+      console.log("upend");
+      // isListeningMouse = false;
+    // }
+  }
+
+  // if (!isListeningMouse) {
+      document.addEventListener("mousemove", mouseMove);
+      document.addEventListener("mouseup", mouseUp);
+      // isListeningMouse = true;
+  }
+// }
+)
+</script>
+</script>
+</html>

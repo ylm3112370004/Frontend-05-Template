@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    /* body {
+      margin: 0;
+      padding: 0;
+    } */
+    .carousel {
+      width: 400px;
+      height: 250px;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .carousel>div {
+      display: inline-block;
+      width: 400px;
+      height: 250px;
+      /* transition: ease 0.5s; */
+    }
+  </style>
+</head>
+
+<body>
+  <div class="carousel">
+    <div class="slider" style="background-color: lightcoral;">1</div><div class="slider" style="background-color: lightblue;">2</div><div class="slider" style="background-color: lightgreen">3</div><div class="slider" style="background-color: lightgrey;">4</div>
+  </div>
+  <!-- <div id="box" style="width: 200px; height: 200px; background-color: red;"></div> -->
+</body>
+<script>
+  const START_TIME = Symbol("start_time");
+  const HANDLER = Symbol("handler");
+
+  const PAUSE_START = Symbol("pause_start");
+  const PAUSE_TIME = Symbol("pause_time");
+
+
+  class Timeline {
+    constructor() {
+      this.animations = new Set();
+      this.animationTimes = new Map();
+      this[PAUSE_TIME] = 0;
+
+      this.tick = () => {
+        let now = Date.now();
+
+        for (let animation of this.animations) {
+          let time = this.animationTimes.get(animation);
+          let t;
+          if (time < this[START_TIME]) {
+            t = now - this[START_TIME];
+          } else {
+            t = now - time;
+          }
+          t = t - this[PAUSE_TIME];
+
+          if (t > animation.duration) {
+            animation.receiveTime(animation.duration);
+            this.animations.delete(animation);
+            continue;
+          } else {
+            animation.receiveTime(t);
+          }
+        }
+        this[HANDLER] = window.requestAnimationFrame(this.tick);
+      }
+    }
+    start() {
+      this[START_TIME] = Date.now();
+      this.tick();
+    }
+    pause() {
+      this[PAUSE_START] = Date.now();
+      window.cancelAnimationFrame(this[HANDLER])
+    }
+    resume() {
+      this[PAUSE_TIME] = this[PAUSE_START] - this[START_TIME];
+      this.tick();
+    }
+    add(animation, time) {
+      this.animations.add(animation);
+      this.animationTimes.set(animation, time || Date.now());
+    }
+    reset() {
+      this.animations = new Set();
+      this.animationTimes = new Map();
+      this[PAUSE_TIME] = 0;
+
+    }
+  }
+
+  class Animation {
+    constructor(obj, property, startValue, endValue, duration, delay, timingFunction, template) {
+      this.obj = obj;
+      this.property = property;
+      this.startValue = startValue;
+      this.endValue = endValue;
+      duration = duration;
+      this.delay = delay;
+      this.timingFunction = timingFunction || (v => v);
+      this.template = template || (v => v);
+    }
+
+    receiveTime(t) {
+      let range = this.endValue - this.startValue;
+      let progress = this.timingFunction(t / duration); // [0, 1]
+
+      this.obj[this.property] = this.template(this.startValue + range * progress);
+    }
+  }
+</script>
+<script type="module">
+  import { ease } from './ease.js';
+  const magicNum = 400;
+  const duration = 1500;
+  const tl = new Timeline();
+  let handler = 0;
+  tl.start();
+  const carousel = document.getElementsByClassName('carousel')[0];
+  let current = 0;
+  const nextPic = () => {
+    const children = carousel.children;
+    const count = children.length;
+    let next = (current + 1) % count;
+
+    // children[next].style.transition = "none";
+    children[next].style.transform = `translateX(${(-next + 1) * magicNum}px)`;
+    setTimeout(() => {
+      children[next].style.transition = "";
+      children[current].style.transform = `translateX(${(-current - 1) * magicNum}px)`;
+      children[next].style.transform = `translateX(${(-next) * magicNum}px)`;
+
+      current = next;
+    })
+  }
+
+  const nextPicAnimation = () => {
+    const children = carousel.children;
+    const count = children.length;
+    let next = (current + 1) % count;
+
+    children[next].style.transform = `translateX(${(-next + 1) * magicNum}px)`;
+
+    tl.add(new Animation(children[current].style, "transform",
+    (-current) * magicNum, (-current - 1) * magicNum, duration, 0, ease, v => `translateX(${v}px)`));
+    tl.add(new Animation(children[next].style, "transform", 
+    (-next + 1) * magicNum, (-next) * magicNum, duration, 0, ease, v => `translateX(${v}px)`))
+    
+    current = next;
+  }
+
+  carousel.addEventListener("mousedown", (event) => {
+    let startX = Date.now();
+
+    tl.pause();
+    window.clearInterval(handler);
+
+    let mouseUp = (event) => {
+
+      handler = window.setInterval(nextPic, 3000);
+      tl.resume();
+      
+      // console.log(mouseMove, mouseUp)
+      if (event.buttons === 0) {
+        document.removeEventListener("mousemove", mouseMove);
+        document.removeEventListener("mouseup", mouseUp);
+        console.log("remove 1")
+      }
+    }
+    let mouseMove = (event) => {
+      let x = event.clientX - startX;
+      console.log("dx = ", x);
+    }
+    document.addEventListener("mousemove", mouseMove);
+    document.addEventListener("mouseup", mouseUp);
+  })
+
+
+  handler = window.setInterval(nextPic, 3000);
+</script>
+
+</html>

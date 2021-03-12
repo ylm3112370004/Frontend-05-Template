@@ -1,0 +1,19 @@
+<div id="app-5">
+  <p>{{message}}</p>
+  <button v-on:click="reverseMessage">Reverse Message</button>
+</div>
+
+<script type="module">
+  import { ToyVue as Vue } from './index.js';
+  var app5 = new Vue({
+    el: '#app-5',
+    data: {
+      message: 'hello Vue.js!'
+    },
+    methods: {
+      reverseMessage: function() {
+        this.message = this.message.split('').reverse().join('');
+      }
+    }
+  })
+</script>

@@ -1,0 +1,14 @@
+<div id="a">
+  <span>1</span>
+  <p>2</p>
+  <p>3</p>
+  <div>4</div>
+</div>
+
+<script>
+  let element = document.getElementById('a');
+  let l = element.childNodes.length;
+  while (l-- > 0) {
+    element.appendChild(element.childNodes[l]);
+  }
+</script>

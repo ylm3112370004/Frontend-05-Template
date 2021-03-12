@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .container {
+      max-width: 800px;
+      padding: 16px;
+      margin: 30px auto;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-shadow: 0 0 4px 0px rgba(0, 0, 0, .3s);
+    }
+
+    .tabs .tab-header {
+      position: relative;
+      display: flex;
+      font-size: 13px;
+      color: #303030;
+      line-height: 30px;
+      font-weight: 500;
+      border-bottom: 2px solid #ddd;
+    }
+
+    .tabs .tab-item {
+      margin-right: 30px;
+      margin-bottom: -2px;
+      cursor: pointer;
+    }
+
+    .tabs .tab-item.active {
+      color: #409eff;
+    }
+
+    .tabs .line {
+      position: absolute;
+      top: 100%;
+      height: 2px;
+      width: 50px;
+      background: #409eff;
+      transform: translateX(0);
+      transition: all .3s;
+    }
+
+    .tabs .tab-content {
+      padding: 16px 0;
+    }
+
+    .tabs .tab-panel {
+      display: none;
+    }
+
+    .tabs .tab-panel.active {
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h2>Tab选项卡</h2>
+    <div class="tabs">
+      <div class="tab-header">
+        <span class="tab-item active">用户管理</span>
+        <span class="tab-item">配置管理</span>
+        <span class="tab-item">角色管理</span>
+        <span class="tab-item">定时任务补偿</span>
+        <span class="line"></span>
+      </div>
+      <div class="tab-content">
+        <span class="tab-panel active">用户管理</span>
+        <span class="tab-panel">配置管理</span>
+        <span class="tab-panel">角色管理</span>
+        <span class="tab-panel">定时任务补偿</span>
+      </div>
+    </div>
+  </div>
+</body>
+
+<script>
+  const tabItems = document.getElementsByClassName('tab-item');
+  const tabPanels = document.getElementsByClassName('tab-panel');
+  const line = document.querySelector('.tabs .line');
+
+  for (let i = 0; i < tabItems.length; i++) {
+    let item = tabItems[i];
+    item.addEventListener('click', function (e) {
+      if (this.classList.contains('active')) return;
+
+      for (let j = 0; j < tabItems.length; j++) {
+        tabItems[j].classList.remove('active');
+        tabPanels[j].classList.remove('active');
+      }
+
+      line.style.width = `${this.offsetWidth}px`;
+      line.style.transform = `translateX(${this.offsetLeft}px)`;
+
+      let index = Array.prototype.slice.call(tabItems).indexOf(this);
+      this.classList.add('active');
+      tabPanels[index].classList.add('active');
+    })
+  }
+</script>
+
+</html>
